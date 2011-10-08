@@ -1,0 +1,157 @@
+
+Seek to the section ``INSTALLATION'' if you want the quickie.
+
+
+PROJECT OVERVIEW
+
+	I started ident2 awhile ago for several reasons.
+		A: I needed something to do.
+		B: I wanted to make my reply something other than my
+			generic UNIX username, for IRC chaos, I guess.
+		C: I needed the practice.
+		D: I wanted to contribute to the community!
+
+	I've since grown weary of meddling with this server.  After the
+	second rewrite between a feature incorporation blitz and a
+	minimalization streak, I've decided to move on.  I'll still add
+  bug fixes and address any security concerns, however.
+
+TERMS OF USE
+
+	Ident2 is provided under the GNU General Public License.
+	This license can be viewed in the included 'COPYING' file or
+	found at http://www.gnu.org/
+
+
+PLANNED PORTS
+
+	I am very much in favor of porting this server. I have hopefully
+	complied with POSIX well enough to make it reasonably simple.
+	Writing ports should be a no brainer as far as writing actual code
+	goes. The only parts that need implementing are the three m_*
+	functions listed in the MACHINE section in ident2.h
+
+	Ident2 was developed under Linux and has been ported to FreeBSD.
+
+
+PORT NOTES
+
+	The FreeBSD port will probably only compile under FreeBSD 3.x and up.
+	The Linux version was tested only on 2.2.x
+
+
+CONTRIBUTIONS
+
+  Hans Chr. Saustrup, Aarhus, Denmark
+  hc@saustrup.dk / neurox [#danmark/ircnet]
+    fixing lots of my silly bugs.
+
+  Alexander Reelsen <ar@rhwd.net>
+  Working with me to get it included in
+  the Debian Project.
+
+  Ilya Novoselov <nullguid@t72.ru>
+  For fixing and reporting a bug in m_get_uid() under FreeBSD
+
+GETTING
+
+  https://github.com/mbacarella/ident2
+
+INSTALLATION
+
+	Check define.h first for things you might be interested in toggling.
+
+	./configure
+	make
+	make install
+
+	If the script fails, your system is probably not supported or
+	you have a buggered install. I could've also screwed up.
+	If you think it's MY fault, e-mail me.
+		(seek to the section CONTACT, below)
+
+	The server should install to /usr/local/sbin/ident2
+
+	Start the server from the command line (as root), or
+	go right ahead and add it to /etc/inetd.conf if you're too
+	cool for your own good. If you have no idea how to do this,
+	please read the man page. ``man inetd.conf'' works nicely.
+	Here is what you might use:
+
+auth    stream  tcp     nowait  root    /usr/local/sbin/ident2  ident2
+
+	Yes, these fields are deliciously tab seperated.
+	If inetd.conf has no idea what 'auth' is, make sure
+	it appears in /etc/services. If not, well, you're going
+	to learn how to do two new things today.
+
+	Feel free to also spawn ident2 with tcp wrappers. It shouldn't mind.
+
+	If you're sick of the damned thing, you can uninstall it by
+	doing:
+		make uninstall
+
+	Be sure to remove it from inetd.conf if necessary.
+
+COMMAND LINE PARAMETERS
+
+	Ident2 supports "standard" command line parameters as well
+	as the GNU long command-line options. ident2 will provide
+	a list of command line parameters if you invoke it with --help
+
+IP MASQUERADING NOTES
+
+        IP Masquerading support was removed. I do not feel that I can
+	implement it without disgustifying my code, but furthermore, I
+	don't have the time/patience to make it work.
+
+	You can essentially achieve the same results by telling ident2
+	to simply send random replies to all requests.
+
+CONFIGURING REPLIES
+
+	By default, without any command line options,
+	ident2 should be fully usable in production environments
+	that require user accountability. Divergence from the RFC
+	is only achieved by command line parameters that tell it
+	to do so.
+
+	In short, if you're looking for a drop in replacement,
+	just start ident2 from the command line (as root) with
+	nothing else.
+
+	If you're wondering how to set your own ident replies,
+	merely create a file .ident in your home directory and
+	do the following:
+		echo 'ident spanky' > ~/.ident
+
+	Start ident2 with the '-i' option. You may of course, replace
+	'spanky' with whatever your preffered ident reply might be.
+
+	Also note. If a user has the file ``.noident'' in their directory,
+	replies will be disabled. You must start the server with '-n' if
+	you want this feature.
+
+MODES OF OPERATION
+
+	Ident2 has two modes of operation. inetd child, or
+	standalone daemon. The inetd child itself, never forks.
+	The daemon fork()s on every accepted connection.
+
+	Whatever the mode, execution must trickle down to the nexus
+	if anything useful is supposed to happen. The function nexus()
+	is basically where the logic occurs and the reply is decided on
+	and dispatched.
+
+CONTACT
+
+    Michael Bacarella <mbac@netgraft.com>
+    http://m.bacarella.com/
+    http://netgraft.com/
+
+MISC. COMMENTS
+
+	As the GNU GPL says, this code is provided without warranty.
+
+Michael Bacarella - mbac@panix.com
+11/02/03 - 16:23PM  - New York.

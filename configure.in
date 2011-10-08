@@ -1,0 +1,101 @@
+dnl Fix me I'm badly written!
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(common.c)
+AC_CONFIG_AUX_DIR(util)
+
+echo > config.h
+
+echo -n "checking host operating system... "
+HOSTOS=`uname -s 2> /dev/null`
+echo "$HOSTOS"
+HOSTREL=`uname -r 2> /dev/null`
+echo -n "checking system version... "
+echo "$HOSTREL"
+
+dnl Use if it is an error not to find a program.
+AC_DEFUN(ENSURE_PATH_PROG, [
+    AC_PATH_PROG($1, $2)
+    if test -z "${$1}" ; then
+        AC_MSG_ERROR($2 was not found in path and is required)
+    fi
+])
+
+case "$HOSTOS" in
+	Linux*)
+		cp sys/m_linux.c machine.c
+	;;
+	FreeBSD*)	# remember, test returns a non-zero value if true
+		if (test "$HOSTREL" = "3.*")
+		then
+			echo "====================================="
+			echo "System version is not 3.x, this server may not"
+			echo "compile or run on this version. Good luck."
+			echo "====================================="	
+		fi
+		cp sys/m_fbsd.c machine.c
+	;;
+	SunOS|NetBSD|OpenBSD|OSF/1|HP-UX*)
+		if (test "$HOSTREL" = "5.10" -a "$HOSTOS" = "SunOS" ); then
+			echo "======================================"
+			echo "Remember, for Solaris 10, you should"
+			echo "compile the latest version of lsof"
+			echo "from source."
+			echo "======================================"
+		fi
+		cp sys/m_lsof.c machine.c
+		ENSURE_PATH_PROG(LSOF, lsof)
+		CFLAGS="$CFLAGS -DLSOF_LOCATION='\"$LSOF\"'"
+		AC_SUBST(CFLAGS)
+	;;
+	*)
+		echo "======================================"
+		echo "Your Operating System is not supported"
+		echo "..see README to find out how to port"
+		echo "..ident2 to this platform"
+		echo "======================================"
+		exit 1
+esac
+		
+dnl Checks for programs.
+AC_PROG_INSTALL
+AC_PROG_CC
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(fcntl.h sys/time.h syslog.h unistd.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_TYPE_UID_T
+
+dnl Checks for library functions.
+AC_TYPE_SIGNAL
+AC_CHECK_FUNCS(select socket strerror strstr)
+AC_CHECK_FUNC(gethostent, , AC_CHECK_LIB(nsl, gethostent))
+AC_CHECK_FUNC(setsockopt, , AC_CHECK_LIB(socket, setsockopt))
+
+dnl Checks for /var/run
+echo -n 'checking for /var/run/... '
+if test -d /var/run
+then
+	echo '#define HAS_VAR_RUN' >> config.h
+	echo 'yes'
+else
+	echo 'no -- automatic shutdown not supported'
+fi
+
+echo -n 'checking for getopt_long... '
+AC_TRY_COMPILE(
+	[#include <stdio.h>
+	#include <stdlib.h>
+	#include <unistd.h>
+	#include <getopt.h>],
+	[getopt_long(0,NULL,NULL,NULL,NULL);],
+	[echo yes; echo \#define HAS_GETOPT_LONG >> config.h],
+	[echo no - short command line options only])
+	
+AC_OUTPUT(Makefile)

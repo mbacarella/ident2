@@ -1,0 +1,72 @@
+.TH ident2 8 GNU
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.SH NAME
+ident2 \- An advanced ident daemon
+.SH SYNOPSIS
+.B ident2
+.I "[options]"
+.SH "DESCRIPTION"
+ident2 is an advanced ident daemon, which can run as an inetd service or
+on it's own. It has various features such as user defined and random
+replies, extensive logging, and full administrative control.
+.PP
+.SH OPTIONS
+The program follows the usual GNU syntax command-line unless it is
+unsupported on your system. GNU options begin with two dashes(`-') and have
+much more descriptive names.
+.TP
+.B \-h, \-\-help
+Show summary of options.
+.TP
+.B \-u, \-\-usage
+Shows example command lines
+.TP
+.B \-v, \-\-version
+Show version information
+.TP
+.B \-l, \-\-license
+Show licensing information
+.TP
+.B \-a, \-\-force\-inetd
+Force inetd mode, if autodetection isn't working.
+.TP
+.B \-d, \-\-force\-daemon
+Force standalone daemon, if autodetection isn't working.
+.TP
+.B \-i, \-\-use\-user\-ident
+Allow user defined ident replies. Just do a
+.B echo 'ident ar' > ~/.ident
+to change your ident reply.
+.TP
+.B \-y, \-\-user\-reply\-file
+File ident2 should look for in user's homedir for replies. Default is ~/.ident
+.TP
+.B \-n, \-\-allow\-noident\-file
+Disable replies for user if user has a ~/.noident file. This behavior is disabled by default.
+.TP
+.B \-o, \-\-client\-timeout
+Clients timeout after this many seconds
+.TP
+.B \-s, \-\-dont\-change\-uid
+Ident2 will normally try to change it's uid to something less privileged if
+it finds it's uid to be 0. This option disables this behavior altogether.
+.TP
+.B \-r, \-\-always\-random
+Always send a random reply, regardless of what kind of request the client
+made. This is useful for abusing the ident protocol as well as assisting 
+outgoing IP masqueraded connections.
+.TP
+.B \-m, \-\-daemon\-maxclients
+Daemon-only: Accept no more than this many connections at a time.
+.TP
+.B \-p, \-\-daemon\-port
+Daemon-only: Bind this port, instead of 'auth' aka 113
+.TP
+
+
+.SH "SEE ALSO"
+.IR "inetd(8), inetd.conf(5)" 
+.SH AUTHOR
+This manual page was written by Alexander Reelsen <ar@rhwd.net>,
+for the Debian GNU/Linux system (but may be used by others).

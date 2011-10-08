@@ -1,0 +1,94 @@
+# Makefile for ident2
+# Copyright (C) 1999 Michael Bacarella
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+OPT=-g -O2
+
+AR = ar
+AR_FLAGS = rc
+RANLIB = @RANLIB@
+
+CC = @CC@
+CFLAGS = -Wall -O2 @CFLAGS@
+INSTALL = @INSTALL@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+doc_format = @doc_format@
+
+PROG = ident2
+BINDIR = @prefix@/sbin
+MANDIR = @prefix@/man/man8
+
+SOURCES=ident2.c common.c daemon.c m_${MACHTARGET}.c
+OBJS=ident2.o common.o daemon.o machine.o
+DOC=ident2.8
+LIBS=@LIBS@
+
+all: $(PROG)
+
+install: all
+	$(top_srcdir)/util/mkinstalldirs $(prefix)/sbin
+	$(top_srcdir)/util/mkinstalldirs $(prefix)/share/man/man8
+	$(INSTALL) $(PROG) $(prefix)/sbin
+	# We get Debian to install the manpages.
+#	$(INSTALL) $(DOC) $(prefix)/share/man/man8
+
+uninstall:
+	/bin/rm -f $(prefix)/sbin/$(PROG)
+	/bin/rm -f $(prefix)/share/man/$(DOC)
+
+$(PROG): $(OBJS)
+	$(CC) $(CFLAGS) -o $(PROG) $(OBJS) $(LIBS)
+
+clean:
+	/bin/rm -f core *.o $(OBJS) $(PROG)
+
+distclean: clean
+	/bin/rm -f Makefile config.h config.status config.cache config.log
+
+mostlyclean: clean
+
+maintainer-clean: clean
+
+#PROG.doc: PROG.
+#        makeinfo PROG.texi
+
+# automatic re-running of configure if the ocnfigure.in file has changed
+#configure: configure.in
+#	autoconf
+
+# autoheader might not change config.h.in, so touch a stamp file
+#config.h.in: stamp-h.in
+#stamp-h.in: configure.in
+#	autoheader
+#	echo timestamp > stamp-h.in
+#
+#config.h: stamp-h
+#stamp-h: config.h.in config.status
+#	./config.status
+
+#Makefile: Makefile.in config.status
+#	./config.status
+
+#config.status: configure
+#	./config.status --recheck

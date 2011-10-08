@@ -1,0 +1,113 @@
+--------- [07/22/2005
++ incorporated lsof patch which adds support for
+  SunOS, NetBSD, OpenBSD, OSF/1, HP-UX
+  (thanks inittab@netizenweb.com (Greg Schenzel))
+
+--------- [05/18/2004
++ buffer overflow in _getl fixed :(
+
+--------- [11/02/2003
++ fixed using data after it has been freed in sys/m_fbsd.c:m_get_uid()
+  thanks to Ilya Novoselov <nullguid@t72.ru>
+
+--------- [08/18/2000
++ forgot to specifiy option 'n' in getopt_long
+  thanks to Johan Ekenberg <johan@ekenberg.se> for pointing this out
+
+--------- [04/11/2000
++ correctly handles errno == EINTR when accept() returns -1
++ date formats in CHANGES file now Y2K compliant!
+
+--------- [11/2/99
++ port to FreeBSD
++ PID registration, under FreeBSD, is also /var/run
+
+--------- [9/18/99
++ changed all sprintf's to snprintf's
++ removed all potential security hazards (strcpy, memcpy, sprint, etc)
++ moved m_register_pid AFTER the initial fork()-to-become-daemon,
+  otherwise wrong pid is registered.
++ d'oh. move m_reduce_rights AFTER m_register_pid, otherwise can't
+  write pid to /var/run
+- NOTE, snprintf is not portable. must be removed in future.
+
+--------- [9/3/99]
++ performing security sweep. reevaluating choices
++ merged getopt_long support
++ added getopt_long detection to ./configure
++ wrote two help outputs (short and short+long versions)
++ implemented the --license parameter
++ implemented the --usage paramater
+
+--------- [8/30/99]
++ moved srand(time(NULL)) out of INIT_GLOBALS and into the random reply generator
+  function. rand is seeded every time, which is flawed, but still harmless.
+  this was moved because the parent never actually calls rand(), which sucks
+  because the children will keep generating the same reply.
++ implemented new machine call, m_register_pid(), for use in daemon mode,
+  on systems that wish to keep track of running system services.
++ PID registration, under Linux, in /var/run
++ switched to a ./configure based setup
+
+--------- [8/25/99]
++ changed m_linux.c to only setuid(). Under Linux, setuid() sets the effective
+  userid as well as superuser. If this would be the case, seteuid() should fail.
+
+--------- [8/9/99]
++ added random replies
++ fixed standard unspecial replies (INIT_GLOBALS wasn't initting!)
+- ripped out config file parsers
+- ripped out all semblances of IP masquerading
++ rather than trying to drop userid to nobody and failing if it
+  doesn't work, it only tries to change uid if uid is 0, elsewise,
+  keep current uid.
++ reworded README
+  
+--------- [6/11/99]
+- removed throttled daemon. I felt this included some very unnatural
+  code and it was a pain to debug. it was a research project at most.
++ rewrote config file parser
++ rewrote command-line processor
++ included GNU information on top of all source files
++ code cleaning spree. Optimized, minimalized, etc.
++ fixed buffer handling in some areas which may have been dangerous
++ reorganized some general code into common.c
++ stablized threaded daemon
++ rewrote README
++ reorganized throttled daemon
++ moved accept() out into the child process so we don't have
+  to do any nasty stuff like return file descriptors to the
+  parent through exit().
++ adopted capitalize global variables convention
++ decided to start DATING these changes
+
+---------- 0.999c
++ no idea why I thought the user of 'nobody' couldn't carry on identity
+  functions. The dropping to nobody under Linux has been reenacted.
++ fixed a diverge from RFC1413. Thanks to Piotr Kucharski <chopin@sgh.waw.pl>
+  for pointing out that END OF LINE is clearly defined by the RFC as CRLF
+  and not LF. Apologies to anyone affected by this.
++ fixed an 'off by one' error in the throttled implementation causing a
+  garbage char to appear at the end of an ident query.
++ command-line option to display compile-time options.
++ shamelessly copied a pidentd convention. If you have the file .noident
+  in your home directory, it will not send a response to anyone requesting
+  an ident that resolves to your username.
++ dropping userid to 'nobody' has been changed to instead drop the access
+  level to a user defined variable (which SHOULD be a username).
++ moved quite a few variables out into seperate #defines. 
++ dropping userid to 'nobody' as a security measure is back, again.
++ IP masquerading works! Much love to everyone who helped the
+  debugging/fixing process. Especially Hans.
+  -Actually, it only sort of works. Linux 2.0 and 2.1 have
+  differing levels of success. Kernel 2.2 is supposedly going to
+  settle on a format once and for all.
++ rand() wasn't being seeded. 
++ for some reason I wasn't making use of #define USER_REPLIES.
++ dropping the userid to 'nobody' makes servicing ident requests
+  impossible. I'm dumb. The function 'go_nobody' and all references
+  to it were removed.
++ major MAJOR rewrite. This introduced some more natural (ie, not kludgy)
+  code as well as more bugs! It should also be easier to extend and
+  expand. Hopefully noone will get hurt this time. :)
+
