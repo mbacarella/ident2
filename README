@@ -14,7 +14,7 @@ PROJECT OVERVIEW
 	I've since grown weary of meddling with this server.  After the
 	second rewrite between a feature incorporation blitz and a
 	minimalization streak, I've decided to move on.  I'll still add
-  bug fixes and address any security concerns, however.
+	bug fixes and address any security concerns, however.
 
 TERMS OF USE
 
@@ -36,26 +36,13 @@ PLANNED PORTS
 
 PORT NOTES
 
-	The FreeBSD port will probably only compile under FreeBSD 3.x and up.
-	The Linux version was tested only on 2.2.x
+	The FreeBSD port will probably only compile under FreeBSD 3.x and up
+        The Linux version was tested only on 2.2.x
 
-
-CONTRIBUTIONS
-
-  Hans Chr. Saustrup, Aarhus, Denmark
-  hc@saustrup.dk / neurox [#danmark/ircnet]
-    fixing lots of my silly bugs.
-
-  Alexander Reelsen <ar@rhwd.net>
-  Working with me to get it included in
-  the Debian Project.
-
-  Ilya Novoselov <nullguid@t72.ru>
-  For fixing and reporting a bug in m_get_uid() under FreeBSD
 
 GETTING
 
-  https://github.com/mbacarella/ident2
+	https://github.com/mbacarella/ident2
 
 INSTALLATION
 
@@ -92,12 +79,6 @@ auth    stream  tcp     nowait  root    /usr/local/sbin/ident2  ident2
 		make uninstall
 
 	Be sure to remove it from inetd.conf if necessary.
-
-COMMAND LINE PARAMETERS
-
-	Ident2 supports "standard" command line parameters as well
-	as the GNU long command-line options. ident2 will provide
-	a list of command line parameters if you invoke it with --help
 
 IP MASQUERADING NOTES
 
@@ -145,13 +126,5 @@ MODES OF OPERATION
 
 CONTACT
 
-    Michael Bacarella <mbac@netgraft.com>
-    http://m.bacarella.com/
-    http://netgraft.com/
-
-MISC. COMMENTS
-
-	As the GNU GPL says, this code is provided without warranty.
-
-Michael Bacarella - mbac@panix.com
-11/02/03 - 16:23PM  - New York.
+	Michael Bacarella <mbac@panix.com>
+	http://panix.com/~mbac/
